@@ -30,30 +30,37 @@
       .dark .nav-link.active {
         color: #34d399;
       }
+
       .icon-social {
         font-size: 1.25rem;
         line-height: 1;
         vertical-align: middle;
       }
+
       .project-card {
         height: 100%;
         display: flex;
         flex-direction: column;
       }
+
       .project-card-content {
         flex: 1;
         display: flex;
         flex-direction: column;
       }
+
       .project-description {
         flex: 1;
       }
+
       html {
         scroll-behavior: smooth;
       }
+
       section {
         scroll-margin-top: 80px;
       }
+
       /* Custom animations */
       @keyframes spin-slow {
         from {
@@ -96,7 +103,9 @@
         animation: gradient-border 3s ease infinite;
       }
     </style>
+
     <script>
+      // Tailwind Config
       tailwind.config = {
         darkMode: "class",
         theme: {
@@ -131,6 +140,7 @@
             Hafijur<span class="text-primary">.</span>
           </div>
           <div class="flex items-center space-x-4 md:space-x-8">
+            <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center space-x-8">
               <a
                 class="nav-link font-medium text-sm tracking-wider hover:text-primary transition-colors"
@@ -153,14 +163,22 @@
                 >Contact</a
               >
             </nav>
+
+            <!-- Hire Me Button (Visible on both mobile and desktop) -->
             <a
               class="bg-primary text-gray-900 font-bold py-2 px-4 md:px-5 rounded-md text-sm tracking-wider shadow-lg shadow-primary/20 hover:bg-opacity-90 transition whitespace-nowrap"
               href="#contact"
               >Hire me</a
             >
+
             <!-- Mobile menu button -->
-            <button class="md:hidden text-gray-700 dark:text-gray-300">
+            <button
+              id="mobile-menu-button"
+              class="md:hidden text-gray-700 dark:text-gray-300 focus:outline-none"
+              aria-label="Mobile menu"
+            >
               <svg
+                id="menu-icon"
                 class="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
@@ -175,6 +193,35 @@
               </svg>
             </button>
           </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div
+          id="mobile-menu"
+          class="md:hidden hidden absolute left-0 right-0 top-full bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 px-4 py-6 transition-all duration-300"
+        >
+          <nav class="flex flex-col space-y-6 items-start">
+            <a
+              class="nav-link font-medium text-sm tracking-wider hover:text-primary transition-colors w-full py-2"
+              href="#home"
+              >Home</a
+            >
+            <a
+              class="nav-link font-medium text-sm tracking-wider hover:text-primary transition-colors w-full py-2"
+              href="#services"
+              >Services</a
+            >
+            <a
+              class="nav-link font-medium text-sm tracking-wider hover:text-primary transition-colors w-full py-2"
+              href="#work"
+              >Work</a
+            >
+            <a
+              class="nav-link font-medium text-sm tracking-wider hover:text-primary transition-colors w-full py-2"
+              href="#contact"
+              >Contact</a
+            >
+          </nav>
         </div>
       </div>
     </header>
@@ -1792,78 +1839,76 @@
     <!-- JAVASCRIPT -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        // Tab switching for Why Hire Me section
-        const buttons = document.querySelectorAll(".why-hire-btn");
-        const contents = document.querySelectorAll(".tab-content");
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const menuIcon = document.getElementById("menu-icon");
 
-        buttons.forEach((button) => {
-          button.addEventListener("click", function () {
-            const tabId = this.getAttribute("data-tab");
+        if (mobileMenuButton && mobileMenu) {
+          mobileMenuButton.addEventListener("click", function (e) {
+            e.stopPropagation();
+            mobileMenu.classList.toggle("hidden");
 
-            // Remove active class from all buttons and contents
-            buttons.forEach((btn) => btn.classList.remove("active"));
-            contents.forEach((content) => content.classList.add("hidden"));
-
-            // Add active class to clicked button
-            this.classList.add("active");
-
-            // Show corresponding content
-            const activeContent = document.getElementById(`${tabId}-content`);
-            if (activeContent) {
-              activeContent.classList.remove("hidden");
-              activeContent.classList.add("active");
+            // Change icon based on menu state
+            if (mobileMenu.classList.contains("hidden")) {
+              // Show hamburger icon
+              menuIcon.innerHTML =
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />';
+            } else {
+              // Show close icon
+              menuIcon.innerHTML =
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />';
             }
           });
-        });
 
-        // Form submission handler
-        const contactForm = document.querySelector("form");
-        if (contactForm) {
-          contactForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            alert("Thank you for your message! I will get back to you soon.");
-            this.reset();
+          // Close mobile menu when clicking outside
+          document.addEventListener("click", function (event) {
+            if (
+              !mobileMenu.contains(event.target) &&
+              !mobileMenuButton.contains(event.target)
+            ) {
+              mobileMenu.classList.add("hidden");
+              menuIcon.innerHTML =
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />';
+            }
+          });
+
+          // Close mobile menu when clicking on a link
+          const mobileLinks = mobileMenu.querySelectorAll("a");
+          mobileLinks.forEach((link) => {
+            link.addEventListener("click", function () {
+              mobileMenu.classList.add("hidden");
+              menuIcon.innerHTML =
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />';
+            });
           });
         }
 
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-          anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute("href");
-            if (targetId === "#") return;
-
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-              window.scrollTo({
-                top: targetElement.offsetTop - 80,
-                behavior: "smooth",
-              });
-            }
-          });
-        });
-      });
-      // Active route implementation
-      document.addEventListener("DOMContentLoaded", function () {
+        // Active Route Implementation
         const navLinks = document.querySelectorAll(".nav-link");
         const sections = document.querySelectorAll("section[id]");
 
         // Function to update active link
         function updateActiveLink() {
           let current = "";
+          const scrollPosition = window.scrollY + 100; // Offset for better UX
 
           sections.forEach((section) => {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.clientHeight;
 
-            if (window.scrollY >= sectionTop - 150) {
+            if (
+              scrollPosition >= sectionTop &&
+              scrollPosition < sectionTop + sectionHeight
+            ) {
               current = section.getAttribute("id");
             }
           });
 
           navLinks.forEach((link) => {
             link.classList.remove("active");
-            if (link.getAttribute("href").substring(1) === current) {
+            const href = link.getAttribute("href");
+            if (href && href.substring(1) === current) {
               link.classList.add("active");
             }
           });
@@ -1887,9 +1932,66 @@
                 top: targetSection.offsetTop - 80,
                 behavior: "smooth",
               });
+
+              // Update URL hash without scrolling
+              history.pushState(null, null, `#${targetId}`);
             }
           });
         });
+
+        // Tab switching for Why Hire Me section (if exists)
+        const buttons = document.querySelectorAll(".why-hire-btn");
+        const contents = document.querySelectorAll(".tab-content");
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const tabId = this.getAttribute("data-tab");
+
+            // Remove active class from all buttons and contents
+            buttons.forEach((btn) => btn.classList.remove("active"));
+            contents.forEach((content) => content.classList.add("hidden"));
+
+            // Add active class to clicked button
+            this.classList.add("active");
+
+            // Show corresponding content
+            const activeContent = document.getElementById(`${tabId}-content`);
+            if (activeContent) {
+              activeContent.classList.remove("hidden");
+              activeContent.classList.add("active");
+            }
+          });
+        });
+
+        // Form submission handler (if exists)
+        const contactForm = document.querySelector("form");
+        if (contactForm) {
+          contactForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            alert("Thank you for your message! I will get back to you soon.");
+            this.reset();
+          });
+        }
+
+        // Highlight active section based on URL hash on page load
+        function highlightActiveFromHash() {
+          const hash = window.location.hash.substring(1);
+          if (hash) {
+            navLinks.forEach((link) => {
+              link.classList.remove("active");
+              const href = link.getAttribute("href");
+              if (href && href.substring(1) === hash) {
+                link.classList.add("active");
+              }
+            });
+          }
+        }
+
+        // Call on page load
+        highlightActiveFromHash();
+
+        // Also update when hash changes
+        window.addEventListener("hashchange", highlightActiveFromHash);
       });
     </script>
   </body>
